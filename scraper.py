@@ -42,9 +42,9 @@ def run():
         for i, header in enumerate(HEADERS):
             if i in [11, 12, 13]:
                 if cols[i].find('i') is not None:
-                    data[header] = 1
+                    data[header] = True
                 else:
-                    data[header] = 0
+                    data[header] = False
             elif i in [14]:
                 if cols[i].find('code') is not None:
                     data[header] = cols[i].find('code').text
