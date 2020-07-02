@@ -19,7 +19,7 @@ data_dir = join(output_dir, "data")
 HEADERS = ['Global Code', 'Global Name', 'Region Code',
     'Region Name', 'Sub-region Code', 'Sub-region Name',
     'Intermediate Region Code', 'Intermediate Region Name',
-    'Country or Area', 'M49 Code', 'ISO-alpha3 Code',
+    'Country or Area', 'M49 Code', 'ISO-alpha2 Code', 'ISO-alpha3 Code',
     'Least Developed Countries (LDC)', 'Land Locked Developing Countries (LLDC)',
     'Small Island Developing States (SIDS)', 'Developed / Developing Countries']
 
