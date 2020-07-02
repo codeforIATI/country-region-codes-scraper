@@ -56,12 +56,12 @@ def run():
         cols = row.xpath("td")
         data = {}
         for i, header in enumerate(HEADERS):
-            if i in [11, 12, 13]:
+            if i in [12, 13, 14]:
                 if cols[i].find('i') is not None:
                     data[header] = True
                 else:
                     data[header] = False
-            elif i in [14]:
+            elif i in [15]:
                 if cols[i].find('code') is not None:
                     data[header] = cols[i].find('code').text
             else:
