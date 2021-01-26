@@ -77,7 +77,7 @@ def run():
 
     makedirs("output", exist_ok=True)
     with open(join("output", "country_region_codes.csv"), 'w') as csv_f:
-        csvwriter = csv.DictWriter(csv_f, fieldnames=bigdata.keys())
+        csvwriter = csv.DictWriter(csv_f, fieldnames=bigdata.values()[0].keys())
         csvwriter.writeheader()
         for bd in bigdata.values():
             country_data = countries_data.get(bd['ISO-alpha3 Code'])
