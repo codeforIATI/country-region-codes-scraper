@@ -1,8 +1,8 @@
 URL = "https://unstats.un.org/unsd/methodology/m49/overview/"
-COUNTRIES_MORPH_API_URL = "https://api.morph.io/andylolz/country-codes/data.json"
+COUNTRIES_GITHUB_URL = "https://codeforiati.org/country-codes/country_codes.csv"
 
 from lxml import html
-from os import environ, remove
+from os import environ, remove, makedirs
 environ['SCRAPERWIKI_DATABASE_NAME'] = 'sqlite:///data.sqlite'
 
 morph_api_key = environ['MORPH_API_KEY']
@@ -30,11 +30,8 @@ LANG_COLS = ['Global Name', 'Region Name', 'Sub-region Name',
 
 def get_countries_data():
     print("Getting countries data...")
-    r = requests.get(COUNTRIES_MORPH_API_URL, params={
-      'key': morph_api_key,
-      'query': 'select * from "data"'
-    })
-    data = r.json()
+    r = requests.get(COUNTRIES_GITHUB_URL)
+    data = list(csv.DictReader(r.iter_lines(decode_unicode=True)))
     return dict(map(lambda c: (c['code_3_digit'], c), data))
 
 def get_page():
@@ -76,13 +73,21 @@ def run():
             M49_CODE = cols[HEADERS.index('M49 Code')].text
             for lang_col in LANG_COLS:
                 bigdata[M49_CODE].update({'{}_{}'.format(lang_col, lang): cols[HEADERS.index(lang_col)].text })
-    # Save everything to scraperwiki
-    print("Saving data to database...")
-    for bd in bigdata.values():
-        country_data = countries_data.get(bd['ISO-alpha3 Code'])
-        if country_data:
-            bd['ISO-alpha2 Code'] = country_data['code']
-        scraperwiki.sqlite.save(unique_keys=['M49 Code'], data=bd)
+    # Save everything
+    print("Saving data...")
+
+    makedirs("output", exist_ok=True)
+    with open(join("output", "country_region_codes.csv"), 'w') as csv_f:
+        csvwriter = csv.DictWriter(csv_f, fieldnames=bigdata.keys())
+        csvwriter.writeheader()
+        for bd in bigdata.values():
+            country_data = countries_data.get(bd['ISO-alpha3 Code'])
+            if country_data:
+                bd['ISO-alpha2 Code'] = country_data['code']
+
+            csvwriter.writerow(bd)
+            if environ.get("GITHUB_PAGES", False) is False:
+                scraperwiki.sqlite.save(unique_keys=['M49 Code'], data=bd)
     print("Done.")
 
 run()
