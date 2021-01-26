@@ -5,7 +5,6 @@ from lxml import html
 from os import environ, remove, makedirs
 environ['SCRAPERWIKI_DATABASE_NAME'] = 'sqlite:///data.sqlite'
 
-morph_api_key = environ['MORPH_API_KEY']
 import scraperwiki
 import requests
 import shutil
