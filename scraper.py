@@ -20,7 +20,7 @@ HEADERS = [
     'Country or Area', 'M49 Code', 'ISO-alpha2 Code', 'ISO-alpha3 Code',
     'Least Developed Countries (LDC)',
     'Land Locked Developing Countries (LLDC)',
-    'Small Island Developing States (SIDS)', 'Developed / Developing Countries'
+    'Small Island Developing States (SIDS)',
 ]
 
 LANGS = ["ZH", "RU", "FR", "ES", "AR"]
@@ -62,9 +62,6 @@ def run():
                     data[header] = True
                 else:
                     data[header] = False
-            elif i in [15]:
-                if cols[i].find('code') is not None:
-                    data[header] = cols[i].find('code').text
             else:
                 data[header] = cols[i].text
         bigdata[data['M49 Code']] = data
