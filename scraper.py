@@ -1,31 +1,34 @@
-URL = "https://unstats.un.org/unsd/methodology/m49/overview/"
-COUNTRIES_GITHUB_URL = "https://codeforiati.org/country-codes/country_codes.csv"
-
 from lxml import html
-from os import environ, remove, makedirs
+from os import environ, makedirs
 environ['SCRAPERWIKI_DATABASE_NAME'] = 'sqlite:///data.sqlite'
 
 import scraperwiki
 import requests
-import shutil
 from os.path import join
-from glob import glob
 import csv
+
+URL = "https://unstats.un.org/unsd/methodology/m49/overview/"
+COUNTRIES_GITHUB_URL = "https://codeforiati.org/country-codes/country_codes.csv"
 
 output_dir = "output"
 data_dir = join(output_dir, "data")
 
-HEADERS = ['Global Code', 'Global Name', 'Region Code',
+HEADERS = [
+    'Global Code', 'Global Name', 'Region Code',
     'Region Name', 'Sub-region Code', 'Sub-region Name',
     'Intermediate Region Code', 'Intermediate Region Name',
     'Country or Area', 'M49 Code', 'ISO-alpha2 Code', 'ISO-alpha3 Code',
-    'Least Developed Countries (LDC)', 'Land Locked Developing Countries (LLDC)',
-    'Small Island Developing States (SIDS)', 'Developed / Developing Countries']
+    'Least Developed Countries (LDC)',
+    'Land Locked Developing Countries (LLDC)',
+    'Small Island Developing States (SIDS)', 'Developed / Developing Countries'
+]
 
 LANGS = ["ZH", "RU", "FR", "ES", "AR"]
 
-LANG_COLS = ['Global Name', 'Region Name', 'Sub-region Name',
+LANG_COLS = [
+    'Global Name', 'Region Name', 'Sub-region Name',
     'Intermediate Region Name', 'Country or Area']
+
 
 def get_countries_data():
     print("Getting countries data...")
@@ -33,9 +36,11 @@ def get_countries_data():
     data = list(csv.DictReader(r.iter_lines(decode_unicode=True)))
     return dict(map(lambda c: (c['code_3_digit'], c), data))
 
+
 def get_page():
     r = requests.get(URL)
     return html.fromstring(r.text)
+
 
 def run():
     print("Starting up...")
@@ -71,7 +76,7 @@ def run():
             cols = row.xpath("td")
             M49_CODE = cols[HEADERS.index('M49 Code')].text
             for lang_col in LANG_COLS:
-                bigdata[M49_CODE].update({'{}_{}'.format(lang_col, lang): cols[HEADERS.index(lang_col)].text })
+                bigdata[M49_CODE].update({'{}_{}'.format(lang_col, lang): cols[HEADERS.index(lang_col)].text})
     # Save everything
     print("Saving data...")
 
@@ -88,5 +93,6 @@ def run():
             if environ.get("GITHUB_PAGES", False) is False:
                 scraperwiki.sqlite.save(unique_keys=['M49 Code'], data=bd)
     print("Done.")
+
 
 run()
