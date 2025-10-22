@@ -1,2 +1,2 @@
-lxml==4.6.5
+lxml==6.0.2
 scraperwiki==0.5.1
